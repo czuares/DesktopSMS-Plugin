@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+** Copyright 2011 two forty four a.m. LLC <http://www.twofortyfouram.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at <http://www.apache.org/licenses/LICENSE-2.0>
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+-->
+<!-- Because plug-ins interact with Locale as a background service, plug-ins MUST be installed to internal memory. This is 
+    consistent with Google's app install location guidelines: <http://developer.android.com/guide/appendix/install-location.html#Should>. 
+    Note that Locale will reject plug-ins set to either installLocation="auto" OR installLocation="preferExternal". A plug-in MUST
+    specific "internalOnly" or omit the android:installLocation attribute entirely. -->
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.koushikdutta.desksms.plugin"
+    android:installLocation="internalOnly" android:versionCode="1" android:versionName="1.0">
+    <!-- This particular plug-in requires SDK 4 because it relies on new APIs introduced in SDK 4. -->
+    <uses-sdk
+        android:minSdkVersion="4"
+        android:targetSdkVersion="12" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/icon_app"
+        android:hardwareAccelerated="true"
+        android:debuggable="false">
+
+        <!-- This is the "edit" Activity. Note that Locale will reject plug-in Activities for the following reasons: 
+                 - Missing "android:label=[...]"
+                 - Missing "android:icon=[...]"
+                 - The Activity isn't exported (e.g. android:exported="false")
+                 - The Activity isn't enabled (e.g. android:enabled="false")
+                 - The Activity requires permissions not available to Locale -->
+        <activity
+            android:label="@string/plugin_name"
+            android:icon="@drawable/icon_plugin"
+            android:theme="@style/Theme.Locale.Dark"
+            android:exported="true"
+        android:name="EditActivity" android:enabled="true">
+            <!-- this Intent filter allows the plug-in to be discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+        <!-- This is the "fire" BroadcastReceiver. Note that Locale will reject plug-in BroadcastReceivers for the following reasons:
+                - The BroadcastReceiver isn't exported (e.g. android:exported="false")
+                - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
+                - The BroadcastReceiver requires permissions not available to Locale
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING -->
+        <receiver
+            android:exported="true"
+        android:name="FireReceiver" android:enabled="true">
+            <!-- this Intent filter allows the plug-in to discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
